@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Image Signature</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="background-grid"></div>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <h1>DIGITAL SIGNER</h1>
+      </div>
+      <p class="subtitle">Secure image authentication with RSA encryption</p>
+    </header>
+
+    <!-- Image Upload Section -->
+    <section class="upload-section">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-content">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10,9 9,9 8,9"/>
+            </svg>
+          </div>
+          <div class="upload-text">
+            <span class="primary-text">Drop your image here</span>
+            <span class="secondary-text">or click to browse files</span>
+          </div>
+          <div class="file-types">JPG • PNG • GIF • WebP</div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" hidden />
+      </div>
+      
+      <div class="image-preview" id="imagePreview" style="display: none;">
+        <div class="preview-container">
+          <img id="previewImg" alt="Preview" />
+          <div class="image-overlay">
+            <button class="remove-btn" id="removeImage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="image-info">
+          <span id="fileName"></span>
+          <span id="fileSize"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actions Grid -->
+    <section class="actions-section">
+      <div class="action-grid">
+        <!-- Key Generation -->
+        <div class="action-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <circle cx="12" cy="16" r="1"/>
+                <path d="m7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <h3>Key Generation</h3>
+          </div>
+          <p>Generate RSA key pair for signing</p>
+          <button class="btn btn-primary" id="generateKeysBtn">
+            <span class="btn-text">Generate Keys</span>
+            <div class="btn-bg"></div>
+          </button>
+          <div class="key-status" id="keyStatus">No keys generated</div>
+        </div>
+
+        <!-- Image Signing -->
+        <div class="action-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="m9 12 2 2 4-4"/>
+                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                <path d="M13 12h3a2 2 0 0 1 2 2v1"/>
+                <path d="M13 12h-3a2 2 0 0 0-2 2v1"/>
+              </svg>
+            </div>
+            <h3>Sign Image</h3>
+          </div>
+          <p>Create digital signature</p>
+          <button class="btn btn-secondary" id="signImageBtn" disabled>
+            <span class="btn-text">Sign Image</span>
+            <div class="btn-bg"></div>
+          </button>
+          <div class="sign-status" id="signStatus">Ready to sign</div>
+        </div>
+
+        <!-- Signature Verification -->
+        <div class="action-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polyline points="20,6 9,17 4,12"/>
+              </svg>
+            </div>
+            <h3>Verify Signature</h3>
+          </div>
+          <p>Validate image authenticity</p>
+          <button class="btn btn-tertiary" id="verifyBtn" disabled>
+            <span class="btn-text">Verify</span>
+            <div class="btn-bg"></div>
+          </button>
+          <div class="verify-status" id="verifyStatus">Not verified</div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="action-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7,10 12,15 17,10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </div>
+            <h3>Export</h3>
+          </div>
+          <p>Download signature files</p>
+          <div class="export-buttons">
+            <button class="btn btn-outline" id="downloadSigBtn" disabled>
+              <span class="btn-text">Download Signature</span>
+              <div class="btn-bg"></div>
+            </button>
+            <button class="btn btn-outline" id="embedSigBtn" disabled>
+              <span class="btn-text">Embed in PNG</span>
+              <div class="btn-bg"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Import Section -->
+    <section class="import-section">
+      <h3>Import Files</h3>
+      <div class="import-grid">
+        <div class="import-card">
+          <label for="publicKeyImport" class="import-label">
+            <div class="import-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <circle cx="12" cy="16" r="1"/>
+                <path d="m7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <span>Import Public Key</span>
+            <div class="file-hint">.pem files</div>
+          </label>
+          <input type="file" id="publicKeyImport" accept=".pem" hidden />
+        </div>
+        
+        <div class="import-card">
+          <label for="signatureImport" class="import-label">
+            <div class="import-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+            </div>
+            <span>Import Signature</span>
+            <div class="file-hint">.sig files</div>
+          </label>
+          <input type="file" id="signatureImport" accept=".sig" hidden />
+        </div>
+      </div>
+    </section>
+
+    <!-- Output Console -->
+    <section class="output-section">
+      <div class="console-header">
+        <h3>Console Output</h3>
+        <button class="clear-btn" id="clearConsole">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="3,6 5,6 21,6"/>
+            <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="console" id="output"></div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
